@@ -1,0 +1,86 @@
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="./image/incon.ico" type="image/x-icon">
+    <title>VirtualBourse v2</title>
+</head>
+<body>
+        <header class="header">
+            <div class="route">
+                <img src="./image/logo.png" alt="logo site" id="logo">
+                <a href="/">Acceuil</a>
+                <a href="/page3">bourse</a>
+                <a href="/page4">a propos</a>
+            </div>
+            <div class="connection">
+                <a id="bt-connection" href="/connection">Connection</a>
+            </div>
+        </header>
+        <main class="page">
+            <img src="./image/logo.png" id="img" alt="">
+            <h3>Bienvenue</h3>
+            <div class="class-mail"><img src="./image/person.svg" alt=""><input type="text" placeholder="username" id="inp-user"></div>
+            <div class="er-user"></div>
+            <div class="class-mail"><img src="./image/mail.svg" alt=""><input type="email" placeholder="exemple@mail.com" id="inp-mail"></div>
+            <div class="er-mail"></div>
+            <div class="class-mail"><img src="./image/lock.svg" alt=""><input type="password" placeholder="password"id="inp-pw"></div>    
+            <a class="bt" id="bt-inscription" value="">inscription</a>
+            <div class="redirection">
+                <a style="font-weight: lighter;" href="/connection">J' ai déjà un compte</a>
+            </div>
+            <div class="notif">
+            </div>
+        </main>
+        <footer>
+            <li>site francais</li>
+            <li>Par Merlin Gohier</li>
+        </footer>
+        <script src="./fonction.js"></script>
+        <script>
+            document.getElementById("bt-inscription").addEventListener("click",()=>{
+                nom = document.getElementById("inp-user").value
+                mail = document.getElementById("inp-mail").value
+                password = document.getElementById("inp-pw").value
+                fetch("http://localhost:3000/inscriptionuser",{
+                    method:"POST",
+                    headers:{"Content-Type": "application/json"},
+                    body: JSON.stringify({nom :nom, mail :mail,password :password })
+                }).then(res => res.json())
+                .then(data=>{
+                    console.log("Reçu ");
+                    //erreurs mail 
+                    const résultat = data.résultat
+                    const erreur_mail = résultat.erreurMail 
+                    if (!erreur_mail){
+                        const epl_mail = document.getElementsByClassName("er-mail")[0]
+                        epl_mail.className = "erreur"
+                        epl_mail.innerHTML = "erreur, cette adresse mail est déjà utilisée"
+                    } 
+                    //erreur name
+                    const erreur_name = résultat.erreurName 
+                    if (!erreur_name){
+                        const epl_name = document.getElementsByClassName("er-user")[0]
+                        epl_name.className = "erreur"
+                        epl_name.innerHTML = "erreur, ce nom est déjà utilisée"
+                    } 
+                    //vérification de l'inscription
+                    if(résultat.inscription){
+                        const notif = document.getElementsByClassName("notif")[0]
+                        notif.innerHTML = "Inscription réussi"
+                        notif.className = "correct"
+                        //Pour ce souvenir de l'utilisateur
+                        const info_connection = {mail: mail, password: password, nom: nom}
+                        localStorage.setItem("info", JSON.stringify(info_connection))
+                        //changer de page
+                        setInterval(() => {
+                            window.location.href = "/"
+                        }, 2000)
+                    }
+                })
+            })
+
+        </script>   
+</body>
+</html>

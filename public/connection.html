@@ -1,0 +1,81 @@
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="./image/incon.ico" type="image/x-icon">
+    <title>VirtualBourse v2</title>
+</head>
+<body>
+        <header class="header">
+            <div class="route">
+                <img src="./image/logo.png" alt="logo site" id="logo">
+                <a href="/">Acceuil</a>
+                <a href="/page3">Bourse</a>
+                <a href="/page4">a propos</a>
+            </div>
+            <div class="connection">
+                <a id="bt-connection" href="/connection">Connection</a>
+            </div>
+        </header>
+        <main class="page">
+            <img src="./image/logo.png" id="img" alt="">
+            <h3>Bienvenue</h3>
+            <div class="class-mail"><img src="./image/person.svg" alt=""><input type="email" placeholder="exemple@mail.com" name="email" id="inp-mail"></div>
+            <div class="class-mail"><img src="./image/lock.svg" alt=""><input type="password" placeholder="password" name="" id="inp-pw"></div>    
+            <div><input type="checkbox" name="checkbox" id="inp-checkbox"> Afficher le Mot de passe</div>
+            <a class="bt" id="bt-login" value="">Connection</a>
+                <p class="annonce" >
+                </p>
+            <div class="redirection">
+                <a style="font-weight: lighter;" href="">Mot de passe oublié</a>
+                <a style="font-weight: lighter;" href="/inscription">Je n'ai pas de compte</a>
+            </div>
+        </main>
+        <footer>
+            <li>site francais</li>
+            <li>Par Merlin Gohier</li>
+        </footer>
+        <script src="./fonction.js"></script>
+        <script >
+            //afficher le pw 
+            const aff_pw = document.getElementById("inp-checkbox")
+            aff_pw.addEventListener("change",()=>{
+                const pwtype = document.getElementById("inp-pw")
+                if (aff_pw.checked){
+                    pwtype.type = "text"
+                } else {
+                    pwtype.type = "password"
+                }  
+            })
+            //transfère des données vers le back-end
+            document.getElementById("bt-login").addEventListener("click",()=>{
+                let ms = document.getElementsByClassName("annonce")[0]
+                ms.innerHTML= ""
+                ms.id = ""
+                const mail = document.getElementById("inp-mail").value
+                const pw = document.getElementById("inp-pw").value
+                fetch("http://localhost:3000/info",{
+                    method:"POST",
+                    headers:{"Content-Type": "application/json"},
+                    body: JSON.stringify({mail: mail, pw: pw})
+                }).then(res => res.json())
+                .then(data=>{
+                    if(data.message){
+                        ms.innerHTML = "Bon retour parmi nous"
+                        ms.className = "correct" 
+                        const info_connection = {mail: mail, password: pw}
+                        localStorage.setItem("info", JSON.stringify(info_connection))
+                        //A finir (changé la photo de profil, actialiser le portmonney, + fonct ce souvenir de moi )
+                        setInterval(() => {
+                            window.location.href = "/"
+                        }, 2000)
+                    }else if(data.message == false){
+                        ms.innerHTML = "Mot de passe ou mail incorrect"
+                        ms.className = "erreur" 
+                    }
+                })
+            })
+        </script>   
+</body>
+</html> 

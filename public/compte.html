@@ -1,0 +1,67 @@
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="./image/incon.ico" type="image/x-icon">
+    <title>VirtualBourse v2</title>
+</head>
+<body>
+        <header class="header">
+            <div class="route">
+                <img src="./image/logo.png" alt="logo site" id="logo">
+                <a href="/">Acceuil</a>
+                <a href="/page3">Bourse</a>
+                <a href="/page4">a propos</a>
+            </div>
+            <div class="connection">
+                <a id="bt-connection" href="/connection">Connection</a>
+            </div>
+        </header>
+        <main class="contenneur compte">
+            <div class="d1"><h2>Mon compte</h2> <img id="pp" src="./image/photo-utilisateur.png" alt=""></div>
+            <div class="d"><p>pseudo :</p><span id="pseudo"></span></div>
+            <hr id="ligne">
+            <div class="d"><p>mail :</p><span id="mail"></span></div>
+            <hr id="ligne">
+            <div class="d"><p>password :</p><span id="password"></span></div>
+            <div class="d2"><a id="deconnection" class="bt" href="">Se déconnecter</a><a id="supr"  href="">supprimer mon compte</a></div>
+            
+        </main>
+        <footer>
+            <li>site francais</li>
+            <li>Par Merlin Gohier</li>
+        </footer>
+        <script src="./fonction.js"></script>
+        <script>
+            //pour ce déconnecter
+            document.getElementById("deconnection").addEventListener("click", (e) => {
+                e.preventDefault(); // pour éviter le rechargement de la page
+                déconnection();
+            });
+            const m = JSON.parse(localStorage.getItem("info")).mail
+            document.getElementById("mail").innerHTML = m
+            document.getElementById("password").innerHTML = JSON.parse(localStorage.getItem("info")).password
+            document.getElementById("pseudo").innerHTML = JSON.parse(localStorage.getItem("info")).nom
+
+            document.getElementById("supr").addEventListener("click", (e) => {
+            e.preventDefault(); // empêche le rechargement
+
+            fetch("http://localhost:3000/compte/supre", {
+                method: "POST",
+                headers: {
+                "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ mail: m })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                déconnection();
+                } 
+            })
+            });
+
+        </script>   
+</body>
+</html>

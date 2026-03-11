@@ -1,0 +1,79 @@
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="./image/incon.ico" type="image/x-icon">
+    <title>VirtualBourse v2</title>
+</head>
+<body>
+        <header class="header">
+            <div class="route">
+                <img src="./image/logo.png" alt="logo site" id="logo">
+                <a href="/">Acceuil</a>
+                <a href="/page3">Bourse</a>
+                <a href="/page4">a propos</a>
+            </div>
+            <div class="connection">
+                <a id="bt-connection" href="/connection">Connection</a>
+            </div>
+    </header>
+    <main class="front">
+        <h1>Virtual Bourse</h1>
+        <div class="a">
+            <div class="left_a">
+                <h2>Mon portefeuille</h2>
+                <div class="li"></div>
+            </div>    
+            <div class="right_a">
+                <h2 style="text-align: center;">🏆 Top investisseur</h2>
+                <div class="top">
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="./fonction.js"></script>
+    <script src="./script.js"></script>
+    <script>
+        // Génère le portefeuille (sécurisé si localStorage est vide)
+        const storedInfo = JSON.parse(localStorage.getItem("info") || 'null');
+
+        if (storedInfo && storedInfo.mail) {
+          user_data((portefeuille) => {
+            // afficher_portefeuillle gère la récupération des prix et l'affichage des actions
+            // sauvegarder l'argent avant que la fonction ne le supprime
+            const money = portefeuille.money !== undefined ? Number(portefeuille.money).toFixed(2) : null;
+            if (document.getElementById("p_argent") && money !== null) {
+              document.getElementById("p_argent").innerHTML = `Argent : ${money} €`;
+            }
+
+            afficher_portefeuillle(portefeuille);
+          });
+        } else {
+            const leftDiv = document.querySelector(".left_a"); 
+            leftDiv.innerHTML = "";
+            const userDiv = document.createElement("div");
+            userDiv.className = "left_a2";
+
+            userDiv.innerHTML = `<img src="./image/logo.png" style="width:60px; border-radius:20px;" id="img">
+                                <h2 id="message">Bienvenue</h2>
+                                <p>Veuillez vous connecter  pour voir votre <br>portefeuille.</p>
+                                <div class="bt_div">
+                                    <a href="/connection" class="bt" id="bt-login">Me connecter</a>
+                                </div>`;
+            leftDiv.appendChild(userDiv);
+        }
+
+        getTop((users) => {
+            const topDiv = document.querySelector(".top");
+            topDiv.innerHTML = ""; // Clear existing content
+            users.forEach((user, index) => {
+                const userDiv = document.createElement("div");
+                userDiv.innerHTML = `<div class="c"><span><span>${index + 1}</span>.</span>  <span>${user.username}</span><span><span>${Number(user.richess).toFixed(2)}</span>€</span></div>`;
+                topDiv.appendChild(userDiv);
+            });
+        });
+    </script>
+</body>
+</html>
