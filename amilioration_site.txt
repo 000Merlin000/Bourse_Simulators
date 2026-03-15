@@ -1,5 +1,1 @@
-idee site
-- Finir la page d'accueil 
-- faire en sorte que mon site ne s'actualise pas toutes les 10 minutes 
-- faire un système où, en une seule demande, je reçois toutes les données de la bourse d'un seul coup 
-- faire un système qui dit combien j' ai gagné depuis l' achat
+
