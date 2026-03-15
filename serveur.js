@@ -26,35 +26,110 @@ app.use(express.static("public")); // lire les ficher css
 let code_isin = ["TSLA","AMZN","AAPL","GOOGL","MSFT","NVDA"]
 const API_KEY = "2WAnSbwMW62iNrR1VZz2oiSnvM6wjlAQ"
 const API_KEY2 = "8tSDs5J01ctFPoqflZcCYHFeQWjKdHk2"
+const apiKeys = [API_KEY, API_KEY2];
+let apiKeyIndex = 0;
 let dict_prix = [];
+let dailyApiCalls = 0;
+let lastDailyReset = new Date();
 
-async function udapte_prix() {//async permet d' attendre l' a réponse avant de continue 
-  try {
-    // Récupère les prix de toutes les actions en même temps
-    const results = await Promise.all(//attends que toutes mes promesses soient terminées avant de continuer
-      code_isin.map(async (code) => {
-        const res = await fetch(`https://financialmodelingprep.com/stable/quote?symbol=${code}&apikey=${API_KEY2}`);
-        const data = await res.json();
-        return data[0]; // le prix de l’action
-      })
-    );
+function getApiKey() {
+  const key = apiKeys[apiKeyIndex];
+  apiKeyIndex = (apiKeyIndex + 1) % apiKeys.length;
+  return key;
+}
 
-    // Met à jour la liste des prix
-    dict_prix = results;
-    console.log("Prix mis à jour");
-
-  } catch (err) {
-    console.error("Erreur update prix :", err);
+function resetDailyApiCallsIfNeeded() {
+  const now = new Date();
+  if (now.toDateString() !== lastDailyReset.toDateString()) {
+    dailyApiCalls = 0;
+    lastDailyReset = now;
   }
 }
 
+let symbolIndex = 0;
 
-udapte_prix()
-//demande a la base de donné les prix tous les 10min
-setInterval(()=>{
-    udapte_prix()
+async function udapte_prix() {
+  resetDailyApiCallsIfNeeded();
 
-}, 600000)
+  // Si on a presque atteint le quota, on évite de faire des appels inutiles
+  if (dailyApiCalls >= 240) {
+    console.warn(`Limite API proche (${dailyApiCalls}/250). Pas de nouvel appel pour l'instant.`);
+    return;
+  }
+
+  for (const symbol of code_isin) {
+    if (dailyApiCalls >= 250) {
+      console.warn("Quota journalier atteint, arrêt des appels pour aujourd'hui.");
+      break;
+    }
+
+    const apiKey = getApiKey();
+    const url = `https://financialmodelingprep.com/stable/quote?symbol=${symbol}&apikey=${apiKey}`;
+
+    try {
+      const res = await fetch(url);
+
+      // Si on a atteint la limite sur la clé actuelle, on essaye avec l'autre clé une fois
+      if (res.status === 429) {
+        console.warn("Quota API atteint pour cette clé, bascule sur une autre clé.");
+        const secondKey = getApiKey();
+        const retryUrl = `https://financialmodelingprep.com/stable/quote?symbol=${symbol}&apikey=${secondKey}`;
+        const retryRes = await fetch(retryUrl);
+        if (!retryRes.ok) {
+          throw new Error(`Requête échouée après rotation de clé (code ${retryRes.status})`);
+        }
+        const retryData = await retryRes.json();
+        updateDictPrixForSymbol(symbol, retryData);
+        dailyApiCalls += 1;
+        console.log(`Prix mis à jour (${symbol}) (après rotation de clé)`, new Date().toISOString());
+        // Petite pause pour ne pas spammer trop vite
+        await new Promise((r) => setTimeout(r, 300));
+        continue;
+      }
+
+      // 402 = paiement requis / quota dépassé sur le plan
+      if (res.status === 402) {
+        console.error("API renvoie 402 : clé non autorisée ou plan non valide. Vérifie ton abonnement ou utilise une autre clé.");
+        // On bloque les appels pour éviter de spammer et de remplir la limite journalière
+        dailyApiCalls = 250;
+        break;
+      }
+
+      if (!res.ok) {
+        throw new Error(`Requête échouée (code ${res.status})`);
+      }
+
+      const data = await res.json();
+      updateDictPrixForSymbol(symbol, data);
+      dailyApiCalls += 1;
+      console.log(`Prix mis à jour (${symbol})`, new Date().toISOString(), `(${dailyApiCalls}/250 appels aujourd'hui)`);
+
+      // Petite pause pour éviter de frapper l'API trop rapidement
+      await new Promise((r) => setTimeout(r, 300));
+    } catch (err) {
+      console.error("Erreur update prix :", err);
+    }
+  }
+}
+
+function updateDictPrixForSymbol(symbol, apiResponse) {
+  const quote = Array.isArray(apiResponse) ? apiResponse[0] : apiResponse;
+  if (!quote || quote.symbol !== symbol) return;
+
+  // Remplace ou ajoute le prix pour ce symbole
+  const existingIndex = dict_prix.findIndex((item) => item.symbol === symbol);
+  if (existingIndex >= 0) {
+    dict_prix[existingIndex] = quote;
+  } else {
+    dict_prix.push(quote);
+  }
+}
+
+// Mise à jour périodique : 40 minutes = 216 appels/jour (6 symboles par cycle)
+udapte_prix();
+setInterval(() => {
+  udapte_prix();
+}, 40 * 60 * 1000);
 
 
 //page pricipal

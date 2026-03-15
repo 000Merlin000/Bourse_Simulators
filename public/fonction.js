@@ -1,37 +1,60 @@
-//fonction pour importé des donnée 
-function user_data(callback){
-        let info_user = JSON.parse(localStorage.getItem("info")).mail
-        fetch("http://localhost:3000/data",{
-            method:"POST",
-            headers:{"Content-Type": "application/json"},
-            body: JSON.stringify({mail: info_user})
-        }).then(res => res.json())
-        .then(data=>{
-            const portefeuille = JSON.parse(data.info.portefeuille);
-            callback(portefeuille);
-        })
-    }
-//Voirs si il est connecter
-let info_user = JSON.parse(localStorage.getItem("info")).mail
-if(info_user){
-  let div_login = document.getElementsByClassName("connection")[0]
-  const connecter = document.getElementById("bt-connection")
-  const html_texte = connecter.innerHTML
-  const p_argent = document.createElement("p")
-  div_login.removeChild(connecter)
-  div_login.appendChild(p_argent)
-  p_argent.id = "p_argent"
-            
-  //récupére l'argent de l'utilisateur 
-  user_data((portefeuille) => {
-    p_argent.innerHTML = `Argent : ${Number(portefeuille.money).toFixed(2)} €`
-  })
-  //mettre la photo de profil 
-  const a_pp = document.createElement("a")
-  div_login.appendChild(a_pp)
-  a_pp.id = "a_pp"
-    a_pp.innerHTML = `<a href="/mon_compte"><img id="pp" src="./image/photo-utilisateur.png"></a>`
+function getStoredInfo() {
+  const raw = localStorage.getItem("info");
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw);
+  } catch (e) {
+    console.error("Impossible de parser localStorage info", e);
+    return null;
   }
+}
+
+// Fonction pour importer des données utilisateur depuis le back
+function user_data(callback){
+  const stored = getStoredInfo();
+  if (!stored || !stored.mail) return;
+
+  fetch("http://localhost:3000/data",{
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ mail: stored.mail })
+  })
+    .then(res => res.json())
+    .then(data => {
+      const portefeuille = JSON.parse(data.info.portefeuille);
+      if (typeof callback === "function") callback(portefeuille);
+    })
+    .catch(err => console.error("Erreur user_data :", err));
+}
+
+// Voir si l'utilisateur est connecté
+const storedInfoLocal = getStoredInfo();
+const info_user = storedInfoLocal ? storedInfoLocal.mail : null;
+if (info_user) {
+  const div_login = document.getElementsByClassName("connection")[0];
+  const connecter = document.getElementById("bt-connection");
+  const p_argent = document.createElement("p");
+
+  if (connecter && div_login) {
+    div_login.removeChild(connecter);
+    div_login.appendChild(p_argent);
+  }
+
+  p_argent.id = "p_argent";
+
+  // récupère l'argent de l'utilisateur
+  user_data((portefeuille) => {
+    if (p_argent) {
+      p_argent.innerHTML = `Argent : ${Number(portefeuille.money).toFixed(2)} €`;
+    }
+  });
+
+  // mettre la photo de profil
+  const a_pp = document.createElement("a");
+  if (div_login) div_login.appendChild(a_pp);
+  a_pp.id = "a_pp";
+  a_pp.innerHTML = `<a href="/mon_compte"><img id="pp" src="./image/photo-utilisateur.png"></a>`;
+}
 function déconnection(){
     localStorage.removeItem("info")
     setInterval(()=>{
@@ -151,19 +174,4 @@ function getTop(callback){
     if (typeof callback === "function") callback(users);
   })
   .catch(err => console.error("Erreur /classement:", err));
-}
-
-function pas_de_compte(){
-   // Si aucune info n'est stockée, afficher un message ou une interface par défaut
-          leftDiv.innerHTML = "";
-          const userDiv = document.createElement("div");
-          userDiv.className = "left_a2";
-
-          userDiv.innerHTML = `<img src="./image/logo.png" style="width:60px; border-radius:20px;" id="img">
-                                <h2 id="message">Bienvenue</h2>
-                                <p>Veuillez vous connecter  pour voir votre <br>portefeuille.</p>
-                                <div class="bt_div">
-                                    <a href="/connection" class="bt" id="bt-login">Me connecter</a>
-                                </div>`;
-          leftDiv.appendChild(userDiv);
 }
