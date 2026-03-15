@@ -7,52 +7,75 @@
     <title>VirtualBourse v2</title>
 </head>
 <body>
-        <header class="header">
-            <div class="route">
-                <img src="./image/logo.png" alt="logo site" id="logo">
-                <a href="/">Acceuil</a>
-                <a href="/page3">Bourse</a>
-                <a href="/page4">a propos</a>
-            </div>
-            <div class="connection">
-                <a id="bt-connection" href="/connection">Connection</a>
-            </div>
+    <header class="header">
+        <div class="route">
+            <img src="./image/logo.png" alt="logo site" id="logo">
+            <a href="/">Accueil</a>
+            <a href="/page3">Bourse</a>
+            <a href="/page4">À propos</a>
+        </div>
+        <div class="connection">
+            <a id="bt-connection" href="/connection">Connexion</a>
+        </div>
     </header>
-    <main class="main">
-        <h1>informations importantes</h1>
-        <p>
-            VirtualBourse est un simulateur éducatif qui vous permet
-            d’apprendre à gérer un portefeuille d’actions <br>comme un véritable investisseur, 
-            sans risquer d’argent réel.
-        </p>
-        <h2>🧠 Objectif du site</h2>
-        <ul>
-            <li>📈 Découvrir le fonctionnement des marchés boursiers de manière simple et ludique.</li>
-            <li>💰 Simuler l’achat et la vente d’actions avec des prix mis à jour régulièrement.</li>
-            <li>📊 Suivre l’évolution de votre portefeuille virtuel en temps réel.</li>
-            <li>🎯 Comprendre les notions de rendement, de risque et de stratégie d’investissement.</li>
-        </ul>
-        <h2>⚠️ À lire avant de commencer :</h2>
-        <ul>
-            <li>❌ Aucune transaction réelle n’a lieu sur ce site. Il s’agit uniquement d’un outil de simulation à but <br>
-                pédagogique.</li>
-            <li>🧪 Les données affichées (cours, portefeuille, résultats) ne reflètent pas une réelle performance <br>
-                financière.</li>
-            <li>🔐 Les informations que vous saisissez (comme votre identifiant ou votre e-mail) sont utilisées <br>
-                uniquement pour le fonctionnement du simulateur.</li>
-            <li>🚫 VirtualBourse ne fournit aucun conseil financier. Il ne s’agit pas d’une plateforme d’investissement.</li>
-        </ul>
-        <h2>✅ Utilisation conseillée :</h2>
-        <ul>
-            <li>Créez un compte gratuitement et commencez à investir avec votre capital virtuel.</li>
-            <li>Observez les fluctuations des prix et ajustez vos décisions en conséquence.</li>
-            <li>Essayez différentes stratégies pour mieux comprendre les mécanismes de la bourse.</li>
-        </ul>
+
+    <main class="front">
+        <div class="contenue">
+            <h1>À propos de VirtualBourse</h1>
+            <p class="intro-text">
+                VirtualBourse est un simulateur pédagogique conçu pour vous aider à comprendre les mécanismes
+                des marchés financiers sans risquer d’argent réel.
+            </p>
+
+            <div class="section-grid">
+                <section class="card">
+                    <h2>Objectifs</h2>
+                    <ul>
+                        <li>Comprendre le fonctionnement des actions et des marchés.</li>
+                        <li>Tester l’achat / la vente avec des prix mis à jour automatiquement.</li>
+                        <li>Suivre l’évolution de votre portefeuille en temps réel.</li>
+                        <li>Découvrir les notions de rendement, risque et stratégie.</li>
+                    </ul>
+                </section>
+
+                <section class="card">
+                    <h2>Avertissements</h2>
+                    <ul>
+                        <li>Aucune transaction réelle n’est exécutée : c’est uniquement de la simulation.</li>
+                        <li>Les données affichées (cours, portefeuille, résultats) sont indicatives.</li>
+                        <li>Vos informations (identifiant, e-mail) sont stockées localement (localStorage).</li>
+                        <li>VirtualBourse n’est pas une plateforme de conseil financier.</li>
+                    </ul>
+                </section>
+
+                <section class="card">
+                    <h2>Conseils d’utilisation</h2>
+                    <ul>
+                        <li>Créez un compte, débutez avec votre capital virtuel.</li>
+                        <li>Observez les fluctuations des prix et ajustez vos décisions.</li>
+                        <li>Essayez différentes stratégies pour mieux comprendre le marché.</li>
+                    </ul>
+                </section>
+
+                <section class="card">
+                    <h2>Technologies utilisées</h2>
+                    <ul>
+                        <li><strong>HTML &amp; CSS</strong> : structure et style des pages.</li>
+                        <li><strong>JavaScript</strong> : simulation, interaction et stockage local.</li>
+                        <li><strong>Node.js</strong> (fichier <code>serveur.js</code>) : serveur pour servir les pages.</li>
+                        <li><strong>LocalStorage</strong> : sauvegarde des profils et portefeuilles.</li>
+                    </ul>
+                </section>
+            </div>
+        </div>
     </main>
+
     <footer>
-        <li>site francais</li>
-        <li>Par Merlin Gohier</li>
+        <ul>
+            <li style="marker: none;"><img width="30px" src="image/flag_frensh.png" alt="flag français">Merlin Gohier</li>
+        </ul>
     </footer>
+
     <script src="./fonction.js"></script>
 </body>
 </html>

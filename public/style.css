@@ -5,6 +5,9 @@ body{
     margin: 0;
     font-family: "TikTok Sans", sans-serif;
     font-size: 16px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 header{
     background-color:#11234a;
@@ -50,12 +53,34 @@ h1{
     text-align: center;
 }
 footer{
-    padding: 30px;
+    padding: 20px 30px;
     display: flex;
     background-color:#202020;
     align-items: center;
     justify-content: center;
+    border-top: 1px solid rgb(47, 47, 47);
+    margin-top: auto;
+}
+
+footer ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
     gap: 10px;
+}
+
+footer li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #cccccc;
+}
+
+footer img {
+    border-radius: 4px;
 }
 .pl{
   margin-top: 35px;
@@ -362,15 +387,70 @@ footer{
     align-items: center
 }
 
-.left_a2{
+
+
+.b{
+    padding: 30px;
+    border: solid 2px rgb(47, 47, 47);
     display: flex;
+    justify-content: center;
+    gap: 10px;
     flex-direction: column;
-    align-items: center;
-    border: 2px rgb(47, 47, 47) solid;
-    padding-right: 30px;
-    padding-left: 30px;
-    border-radius: 20px;
-    background-color: #202020;
-    height: 30vh;
+    margin-top: 30px;
+    border-radius:  20px;
+    margin-right: 26%;
+    margin-left: 26%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    background-color: #1f1f1f;
+}
+.contenue{
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-direction: column;
+    margin-bottom: 30px;
+    border-radius:  20px;
+    margin-right: 20%;
+    margin-left: 20%;
 
 }
+
+.intro-text {
+    margin-top: 14px;
+    line-height: 1.6;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+.section-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+    margin-top: 25px;
+}
+
+.card {
+    background-color: #1f1f1f;
+    padding: 20px;
+    border: 1px solid rgb(47, 47, 47);
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.card h2 {
+    margin-top: 0;
+    margin-bottom: 12px;
+}
+
+.card{
+    margin: 0;
+    padding-left: 18px;
+}
+
+.card li {
+    margin-bottom: 10px;
+}
+
+

@@ -21,9 +21,12 @@
     <main class="front">
         <h1>Virtual Bourse</h1>
         <div class="a">
-            <div class="left_a">
+            <div class="left_a2">
                 <h2>Mon portefeuille</h2>
-                <div class="li"></div>
+                <div class="li">
+                    
+                </div>
+                
             </div>    
             <div class="right_a">
                 <h2 style="text-align: center;">🏆 Top investisseur</h2>
@@ -31,10 +34,18 @@
                 </div>
             </div>
         </div>
-    </main>
+        <div class="b">
+            <h2>Comment marche la Bourse ?</h2>
+            <p>Virtual Bourse est une plateforme de simulation boursière qui permet aux utilisateurs d'apprendre à investir en bourse sans risquer de l'argent réel. Les utilisateurs peuvent créer un portefeuille virtuel, acheter et vendre des actions, et suivre leurs performances au fil du temps.</p>
 
+        </div>
+    </main>
+        <footer>
+        <ul>
+            <li style="marker: none;"><img width="30px" src="image/flag_frensh.png" alt="flag français">Merlin Gohier</li>
+        </ul>
+    </footer>
     <script src="./fonction.js"></script>
-    <script src="./script.js"></script>
     <script>
         // Génère le portefeuille (sécurisé si localStorage est vide)
         const storedInfo = JSON.parse(localStorage.getItem("info") || 'null');
@@ -74,6 +85,15 @@
                 topDiv.appendChild(userDiv);
             });
         });
+
+        const N_a = document.getElementsByClassName("li")[0];
+        if (N_a.children.length <= 2) {
+            const new_d = document.createElement("div");
+            new_d.innerHTML = `<a id="ajoute" href="/page3">+</a> <p>Acheter une action</p>`;
+            new_d.className = "action";
+            new_d.style.height = "5vh"
+            document.getElementsByClassName("left_a2")[0].appendChild(new_d);
+        }
     </script>
 </body>
 </html>
